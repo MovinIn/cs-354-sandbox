@@ -54,5 +54,5 @@ str is NOT a pointer! It is an array. Because an array is a label to a memory ad
 
 
 ## command line arguments & program arguments
-`command line arguments` - 
+`command line arguments` -   
 `program arguments` - enables information to be passed to the program before it begins
