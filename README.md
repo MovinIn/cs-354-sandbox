@@ -44,12 +44,13 @@ str is NOT a pointer! It is an array. Because an array is a label to a memory ad
 
 `string.h` - library of useful functions to manipulate c strings. 
 
-`int strlen(const char *str)` - returns the length of string `str` up to but not including the null character.  
-`int strcmp(const char *str1, const char *str2)` - compares alphabetically `str1` pointee value with `str2` pointee value. 
-`char* strcpy(char *dest, const char *src)` - copies the string pointed to by `src` to the memory pointed to by `dest` and terminates with the null character (\0).   
-`char* strcat(char *dest, const char *src)` - Appends the string pointed to by `src` to the end of the string pointed to by `dest` and terminates with the null character.   
+1. `int strlen(const char *str)` - returns the length of string `str` up to but not including the null character.  
+2. `int strcmp(const char *str1, const char *str2)` - compares alphabetically `str1` pointee value with `str2` pointee value. 
+3. `char* strcpy(char *dest, const char *src)` - copies the string pointed to by `src` to the memory pointed to by `dest` and terminates with the null character `\0`.
+4. `char* strcat(char *dest, const char *src)` - Appends the string pointed to by `src` to the end of the string pointed to by `dest` and terminates with the null character.   
 
-`Buffer Overflow`: when the array is not big enough to store all of the data. For example, "asd" is tried to put into an array of length 3; this will result in a buffer overflow because "asd" is too big; it is of length 4 including the null character.   
+`Buffer Overflow`: when the array is not big enough to store all of the data. <br/>
+`char a[3] = "asd"; //Buffer Overflow: compiler replaces "asd" with "asd\0" which is of length 4, but we try to fit it in an array of length 3.`
 
 
 
