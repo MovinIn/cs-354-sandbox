@@ -191,7 +191,7 @@ A word in cache is 4 bytes, but in assembly is 2 bytes!
 1. Immediate: `$13 = 13 //this is a constant. We can also do $0x13 for hexadecimal`
 2. Register: `%ebx`
 3. Memory: `(%ebx), (0xABCDEF), 4(%ebx), etc.`
-    1. $$Imm(\%E_b,\%E_i,s) = Base + \%E_i * s + Offset$$
+    1. $$Imm(E_b,E_i,s) = Base + E_i * s + Offset$$
     2. $$E_b$$ and $$E_i$$ must be 32-bit registers.
     3. `Imm` can only be 1, 2, 4, or 8 bytes.
 ### Instructions
