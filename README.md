@@ -92,9 +92,9 @@ Garbage collector implicitly determines unused bytes and frees them.
 5. Must not move previously allocated blocks.
 6. `a-bit`: status of block. `p-bit`: status of previous block. `0 = free`.
 7. Types: first-fit, next-fit, best-fit.
-  1. `first-fit`: traverse list until we find a block that fits.
-  2. `next-fit`: given that the previous malloc function fit a block at address `x`, traverse implicit list starting from address of `x` (with wrap around).
-  3. `best-fit`: tries to fit the block in the smallest free block.
+    1. `first-fit`: traverse list until we find a block that fits.
+    2. `next-fit`: given that the previous malloc function fit a block at address `x`, traverse implicit list starting from address of `x` (with wrap around).
+    3. `best-fit`: tries to fit the block in the smallest free block.
 8. `internal-fragmentation`: wasted memory by allocated block overhead (think: not-splitting blocks vs. splitting blocks).
 9. `false-fragmentation / external-fragmentation`: wasted memory by allocated blocks not condensed, but spread out so that a big block of memory cannot fit, even if we have enough space (but its split up into chunks!)
 #### Explicit Free List
@@ -103,30 +103,30 @@ Used in C.
 2. We traverse this free list in order when `malloc` is called, and find a free block that is suitable.
 3. Worse in space, better in time (We only search free blocks in comparison to implicit free list).
 4. Structure: Each free block node in the data structure has the following elements:
-  1. A header containing the block-size + 0pa (with the last 3 bits) `// 4 bytes`
-  2. An address pointing to the predecessor free block `//4 bytes`
-  3. An address pointing to the successor free block `//4 bytes`
-  4. A footer containing the block size (not including 0pa) `//4 bytes`. This is useful for faster coalescing with a free previous block. 
+    1. A header containing the block-size + 0pa (with the last 3 bits) `// 4 bytes`
+    2. An address pointing to the predecessor free block `//4 bytes`
+    3. An address pointing to the successor free block `//4 bytes`
+    4. A footer containing the block size (not including 0pa) `//4 bytes`. This is useful for faster coalescing with a free previous block. 
 5. Ordering of the explicit free list
-  1. address order: order blocks in free list from low to high addresses. 
-  3. last-in order: most recently freed block is pushed to front of linked list.
+    1. address order: order blocks in free list from low to high addresses. 
+    3. last-in order: most recently freed block is pushed to front of linked list.
 6. Data structures
-  1. Simple segregation: one free list for each block size (8, 16, 24, ...) `//A lot faster, but less memory efficient: cannot split nor coalesce adjacent free blocks.`
-  2. Fitted segregation: one free list for small, medium, large block sizes. `//Slower, but more memory efficient: can split and coalesce blocks.`
+    1. Simple segregation: one free list for each block size (8, 16, 24, ...) `//A lot faster, but less memory efficient: cannot split nor coalesce adjacent free blocks.`
+    2. Fitted segregation: one free list for small, medium, large block sizes. `//Slower, but more memory efficient: can split and coalesce blocks.`
 ### Locality and Caching
 1. Temporal locality: When recently accessed memory is repeatedly accessed in near future. 
 2. Spatial locality: When recently accessed memory location is followed by accessing memory that is nearby.
 3. Stride: step size in words between sequential access in blocks.
 4. Working set: set of blocks accessed during some time interval.
 5. Cache miss: block not found in this cache.
-  1. Cold miss: cache location is empty or invalid. 
-  2. Capacity miss: cache is too small for working set. 
-  3. Conflict miss: two or more blocks map to the same location.
+    1. Cold miss: cache location is empty or invalid. 
+    2. Capacity miss: cache is too small for working set. 
+    3. Conflict miss: two or more blocks map to the same location.
 6. Cache hit: block is in this cache!
 7. Victim block: block that is going to be replaced. 
 8. Placement policies:
-  1. unrestrictive policy: memory block address can be placed in any line in a cache. 
-  2. restrictive policy: `block# % size`.
+    1. unrestrictive policy: memory block address can be placed in any line in a cache. 
+    2. restrictive policy: `block# % size`.
 9. Cache blocks must be big enough to capture spatial locality, but small enough to minimize latency (to copy block from memory to cache or register)
 10. $$B = 2^b$$. $$S = 2^s$$. $$E$$ is associativity, or # of lines in a set. $$C = B * S * E$$. $$C$$ is the cache size.
 #### Designing a Cache
@@ -136,10 +136,10 @@ Used in C.
 4. A line is a location in cache that can store 1 block of memory.
 6. v-bit: a status bit. If $$v=1$$, we have a valid set.
 7. Processing a request
-  1. Extract s-bits from address to get set number.
-  2. Extract t-bits from address and compare with stored tag for cache line.
-  3. If $$v=0$$ or t-bits do not match, it is going to be a `cache-miss`. Fetch from next lowest level!
-  4. If $$v=1$$ and t-bits match, `cache-hit`!
+    1. Extract s-bits from address to get set number.
+    2. Extract t-bits from address and compare with stored tag for cache line.
+    3. If $$v=0$$ or t-bits do not match, it is going to be a `cache-miss`. Fetch from next lowest level!
+    4. If $$v=1$$ and t-bits match, `cache-hit`!
 ##### Basic Cache / Direct Mapped Cache
 1. Each cache set has only one line.
 2. Conflict misses will occur very frequently; `thrashing`: we will continually exchange blocks in the same set.
@@ -152,8 +152,8 @@ Used in C.
 ##### Replacement Policies
 1. Random replacement
 2. Least recently used (LRU): track when block was last accessed.
-  1. Use LRU queue (priority queue).
-  2. Use status bits in each line to track
+    1. Use LRU queue (priority queue).
+    2. Use status bits in each line to track
 3. Least frequently used (LFU): track how often a line is used.
 ##### Writing Policies
 When writing to a block in memory, we write it to the cache first. We can then update the lower levels of memory to reflect the changed value in the cache.   
@@ -162,16 +162,16 @@ When writing to a block in memory, we write it to the cache first. We can then u
 1. Write Through (Immediate)
     1. Slower; must wait. 
 3. Write Back (Later)
-   1. Must track that the block has changed (needs dirty bit). If it has, then we write it back in memory.
-   2. Faster: No wait
+    1. Must track that the block has changed (needs dirty bit). If it has, then we write it back in memory.
+    2. Faster: No wait
 ###### Write Misses
 1. No Write Allocate: Write directly into the lower cache, bypassing this cache.
-  1. (+) Less bus traffic
-  2. (-) Slower! Must wait for lower level to write.
+    1. (+) Less bus traffic
+    2. (-) Slower! Must wait for lower level to write.
 2. Write Allocate: Read block into this cache and then write to it.
-  1. (-) More bus traffic
-  2. (-) Must wait for read from next lower level.
-  3. (+) The read block will be at higher level, which reduces write misses and memory accesses.
+    1. (-) More bus traffic
+    2. (-) Must wait for read from next lower level.
+    3. (+) The read block will be at higher level, which reduces write misses and memory accesses.
 ##### Cache Performance
 1. `hit-rate`: percentage of cache hits per accesses.   
 2. `hit-time`: time to determine a hit.   
