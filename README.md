@@ -194,6 +194,9 @@ A word in cache is 4 bytes, but in assembly is 2 bytes!
     1. $$Imm(E_b,E_i,s) = Base + E_i * s + Offset$$
     2. $$E_b$$ and $$E_i$$ must be 32-bit registers.
     3. `Imm` can only be 1, 2, 4, or 8 bytes.
+### Registers
+`%eip`: Program Counter (PC)
+`e-flags`: condition code registers. 
 ### Instructions
 `MOV, PUSH, POP`: instructions to move from `S` to `D` (from REG/IMMEDIATE/MEM to MEM/REG. EXCLUDES MEM to MEM).   
 
@@ -203,10 +206,38 @@ A word in cache is 4 bytes, but in assembly is 2 bytes!
 1. `S` and `D` must be the same size.
 2. We can use `movs` (sign-extend) or `movz` (zero-extend) if we want to copy from `S` to `D` with different sizes. As an example: `movswl`: moves `S` of size word to `D` of size double word.
 #### PUSH
+Add data to the stack.   
 This pushes `S` to the top of the stack. 
 1. make room on stack.
 2. copy S to top of stack. 
 #### POP
+Remove data from the stack.   
 1. copy top of stack to `D`. 
 2. update stack pointer to shrink stack. 
 #### LEAL
+similar to MOV, but simply copies the address of `S` to `D`. So, `D <--- &S`.   
+1. S must be a memory operand (must be in memory).   
+2. Memory is not accessed.   
+3. Condition Code registers are not set.
+#### Shifts
+##### Logical Shift (zero-fill)
+##### Arithmetic Shift (sign-fill)
+#### CMP and TEST
+`CMP` compares values arithmetically. We subtract the two values to see which is bigger, smaller, or if they are equal.  
+`TEST` compares values logically. We take the logical `AND` to see if the two values are equal or not equal.  
+Both of these instructions only set `CC` registers; it does not change either operand. 
+#### Condition Codes
+1. `ZF`: zero flag; `ZF` = 1 if result = 0.
+2. `CF`: carry flag; if result has unsigned overflow. 
+3. `SF`: sign flag; `SF` = 1 if result < 0.
+4. `OF`: overflow flag; `OF` = 1, if result has 2's complement overflow.
+#### SET
+set a byte register to 1 if a condition is true, set to 0 if false.  
+```
+sete D // == equal
+setne D //!= not equal
+sets D // < 0 signed (negative)
+setns D // >= not signed (nonnegative)
+setz // sets byte register if zero flag is 1
+setnz // sets byte register if zero flag is 0
+```
