@@ -252,4 +252,25 @@ jump to a specific instruction.
 `Stack Frame`: A block of stack memory used by a single function call.   
 `%ebp`: base pointer. Points to the base of `SF`.  
 `%esp`: stack pointer. Points to the top of `SF`.   
-When pushing stack frames: ie. function X calls function Y, then the return address of `X` and `X's %ebp` is pushed onto the stack. Then function Y is pushed onto the stack, with `%esp` and `%ebp` set respectively. Then we only need to set PC to `%ebp` and pop bytes off to get back to function X. 
+When pushing stack frames: ie. function X calls function Y, then the return address of `X` is pushed onto the stack. `%ebp` is pushed onto the stack. Set `%ebp` to `%esp`, so points to old `%ebp`. Then add local variables on stack by subtracting from `%esp`. After function Y ends, then we only need to set `%esp` to `%ebp`, effectively popping Y off the stack. Then we pop old `%ebp` off the stack and set that to `%ebp`. Then we pop the return address and set that to `%eip% (Program Counter).  
+## Transferring Control
+1. Flow Control
+    1. function call like unconditional jumps (call => jmp)
+3. Stack Frames
+    1. return (ret => popl %eip)
+    2. leave (frees stack frame) `movl %ebp, %esp \\ popl %ebp`
+## Register Usage Conventions
+1. `%eax` usually stores return values.
+2. Callee uses `%ebp` to access:
+    1. Callee's arguments `8(%ebp)`
+    2. local variables `-4(%ebp)`
+3. Caller uses `%esp` to:
+    1. setup args to fn call `// movl ARG, 4(%esp)`
+    2. save return address `// ret`
+4. Caller-save: caller must save/restore registers before calling callee function. `// %eax, %ecx, %edx`.
+5. Callee-save: callee must save/restore registers before using them. `// %ebx, %esi, %edi`. 
+
+
+
+
+
