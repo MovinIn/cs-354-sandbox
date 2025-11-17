@@ -248,18 +248,18 @@ jump to a specific instruction.
 `jmp Label`: jumps to label  `//direct jump`
 ##### Conditional Jumps
 `je, jne, jg, ja, jb, etc`
-## Stack and Stack Frames (SF)
+### Stack and Stack Frames (SF)
 `Stack Frame`: A block of stack memory used by a single function call.   
 `%ebp`: base pointer. Points to the base of `SF`.  
 `%esp`: stack pointer. Points to the top of `SF`.   
 When pushing stack frames: ie. function X calls function Y, then the return address of `X` is pushed onto the stack. `%ebp` is pushed onto the stack. Set `%ebp` to `%esp`, so points to old `%ebp`. Then add local variables on stack by subtracting from `%esp`. After function Y ends, then we only need to set `%esp` to `%ebp`, effectively popping Y off the stack. Then we pop old `%ebp` off the stack and set that to `%ebp`. Then we pop the return address and set that to `%eip% (Program Counter).  
-## Transferring Control
+### Transferring Control
 1. Flow Control
     1. function call like unconditional jumps (call => jmp)
 3. Stack Frames
     1. return (ret => popl %eip)
     2. leave (frees stack frame) `movl %ebp, %esp \\ popl %ebp`
-## Register Usage Conventions
+### Register Usage Conventions
 1. `%eax` usually stores return values.
 2. Callee uses `%ebp` to access:
     1. Callee's arguments `8(%ebp)`
@@ -269,6 +269,14 @@ When pushing stack frames: ie. function X calls function Y, then the return addr
     2. save return address `// ret`
 4. Caller-save: caller must save/restore registers before calling callee function. `// %eax, %ecx, %edx`.
 5. Callee-save: callee must save/restore registers before using them. `// %ebx, %esi, %edi`. 
+### Recursion
+`Direct Recursion`: when function calls itself.   
+`Recursive Case`: same as math240 `//case when function calls itself.`
+`Base Case`: same as math240 `//stops the recursion.`
+`Infinite Recursion`: we never reach the base case. This causes `Stack Overflow`, because each recursive call consumes more memory in stack. 
+### Stack Allocated Arrays
+The first element of an array is at the top of the stack (lower addresses). So we add bytes to the starting address to index through the array.   
+### Stack Allocated Multidimensional Arrays
 
 
 
