@@ -241,3 +241,15 @@ setns D // >= not signed (nonnegative)
 setz // sets byte register if zero flag is 1
 setnz // sets byte register if zero flag is 0
 ```
+#### JMP
+jump to a specific instruction. 
+##### Unconditional Jumps
+`jmp *Operand`: jumps to effective address at `*Operand` `//indirect jump`
+`jmp Label`: jumps to label  `//direct jump`
+##### Conditional Jumps
+`je, jne, jg, ja, jb, etc`
+## Stack and Stack Frames (SF)
+`Stack Frame`: A block of stack memory used by a single function call.   
+`%ebp`: base pointer. Points to the base of `SF`.  
+`%esp`: stack pointer. Points to the top of `SF`.   
+When pushing stack frames: ie. function X calls function Y, then the return address of `X` and `X's %ebp` is pushed onto the stack. Then function Y is pushed onto the stack, with `%esp` and `%ebp` set respectively. Then we only need to set PC to `%ebp` and pop bytes off to get back to function X. 
