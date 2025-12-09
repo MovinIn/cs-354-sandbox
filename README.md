@@ -279,6 +279,82 @@ The first element of an array is at the top of the stack (lower addresses). So w
 ### Stack Allocated Multidimensional Arrays
 
 
+## Function Pointers
+A `function pointer` is a pointer to code, storing the address of the first instruction of a function.   
+Allows functions to be stored in arrays and allows functions to be passed to and returned from other functions.   
+### Example
+```
+int func(char c) { }
+int (*my_function_ptr) (char); //creates a function pointer called my_function_ptr, holding an address of the first instruction of a function with a return type of int and parameter of char
+my_function_ptr = func;
+int x = my_function_ptr('c');
+```
+## Buffer Overflow / Stack Smashing
+`Buffer Overflow` is when we exceed the bounds of the array. Dangerous for stack allocated arrays.   
+Buffer Overflow can overwrite data outside the buffer and also the state of execution.   
+## Flow of Execution
+`Exceptional Control Flow`: special execution that enables the system to react to an unusual event.  
+An `event` is a change in processor state that may or may not be related to current instruction.   
+`processor state`: a processor's internal memory elements, registers, flags, signals, etc.
+## Exception Usage
 
+<img width="896" height="538" alt="image" src="https://github.com/user-attachments/assets/f05c5ff7-22a3-435b-b510-4c5fbb74b19e" />
+
+## Exceptions
+An `exception` is an event that sidesteps the usual logical flow.   
+`Exceptions` can originate from hardware or software. The response is an indirect function call that abruptly changes the flow of execution.   
+`Asynchronous Exception`: results from some event unrelated to the current flow of execution.   
+`Synchronous Exception`: results from the current instruction.   
+### General Exceptional Flow
+Normal Flow => Exceptional Event Occurs => Transfer control to Exceptional Handler => Exceptional Handler => Return control (to $$I_{curr}$$, $$I_{next}$$, doesn't return (seg fault))  
+### Kinds of Exceptions
+1. Abort
+    1. cleanly ends a process
+    2. synchronous
+    3. does not return
+2. Fault
+    1. handles problems with current instruction
+    2. potentially recoverable error
+    3. synchronous
+    4. might return to $$I_{curr}$$ and re-execute it.
+3. Interrupt
+    1. Enables devices to notify or signal that it needs attention. 
+    2. Signal from external device
+        1. Device signals an interrupt.
+        2. OS finishes the current instruction.
+        3. transfer control to appropriate exception handler
+        4. transfer control back to interrupted process's next instruction
+        5. Kind of like push notifications (vs. polling which is like RPC: constantly checking periodically \[wasteful\])
+    4. asynchronous
+    5. returns to $$I_{next}$$.
+4. Trap
+    1. Enables a process to interact with OS
+    2. intentional exception
+        1. process indicates that it needs an OS service.
+        2. `int`: interrupt assembly x86 instruction.
+        3. transfer control to the OS system call handler which calls the service function.
+        4. transfer control back to process's next instruction. 
+    4. synchronous
+    5. returns to $$I_{next}$$.
+### Transferring Control via Exception Table
+Exceptions transfer control to the kernel.  
+1. Push return address to top of kernel stack ($$I_{curr}$$ or $$I_{next}$$.   
+2. push interrupted process's state so it can be restarted
+3. Do indirect function call which runs the appropriate exception handler
+    1. `indirect function call`: uses an exception table to determine the exception handler
+    2. `exception table`: a jump table for exceptions that is allocated memory by OS on system boot.
+
+<img width="1595" height="296" alt="image" src="https://github.com/user-attachments/assets/fabb80c9-5f35-4dc9-94c2-3dca58fb9c16" />
+
+### Exceptions and System calls in IA-32 & Linux
+0 - 31 are defined by processor
+Page Fault - we need a data value that is in lower levels of memory
+
+32 - 255 are defined by OS
+
+
+### Context Switch
+A context switch may result from some exception. This happens when the OS decides to switch to another process while the current process is handling an exception.  
+Switching from kernel A to kernel B: `Save context of "A", Restore context of "B", Transfer Control to "B"`  
 
 
