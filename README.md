@@ -357,4 +357,48 @@ Page Fault - we need a data value that is in lower levels of memory
 A context switch may result from some exception. This happens when the OS decides to switch to another process while the current process is handling an exception.  
 Switching from kernel A to kernel B: `Save context of "A", Restore context of "B", Transfer Control to "B"`  
 
+## Multifile Coding
+divide programs into functional units (header file `.h` and source file `.c`).   
+One Definition Rule: an identifier can be defined only once in the global scope  
+
+<img width="742" height="404" alt="image" src="https://github.com/user-attachments/assets/4121a408-db3a-445c-b294-5c9e92762e7b" />
+
+### Reasoning
+Include guards  
+#ifndef: if not defined: otherwise, skip to endif
+#define: define the identifier  
+
+### Multifile Compilation
+
+<img width="1788" height="471" alt="image" src="https://github.com/user-attachments/assets/100436ff-87ef-4925-b11d-2e5142831bb0" />
+
+### Executable and Linkable Format
+
+<img width="518" height="576" alt="image" src="https://github.com/user-attachments/assets/66de0e62-0f94-4255-870f-4f3a0590e8e6" />
+
+
+`.symtab`: linker symbol table - global vars and extern functions  
+`.strtab`: names of symbols in `.symtab` are stored in `.strtab`  
+
+### Static Linking 
+Static linking generates a complete EOF with no variable or function identifiers remaining in the OF
+
+#### Comparison with Dynamic Linking
+Dynamic Linking: does not replace external functions with actual code, but dynamically linked during runtime
+Executable size: smaller; but all library code is dynamically linked.
+### Linking
+Symbol Resolution: makes sure variables and identifiers follow ODR  
+Relocation: variables and function identifiers are replaced with addresses  
+#### Making things private
+Functions and global variables only in a source file and not the header are "intended" as private, but not actually always private. They can still be accessed by units that declare the variable or fn with "extern".   
+We can truly make a variable ALWAYS private by declaring them as static.   
+#### Linker Symbols
+Variables located in the `.data` segment need linker symbols  
+Linker Symbols are symbols managed by the linker, created by compiler.   
+
+<img width="1308" height="635" alt="image" src="https://github.com/user-attachments/assets/e082f6ee-f427-4849-8ecb-7e813b491970" />
+
+All functions need linker symbols for relocation, likely all for resolution  
+
+<img width="1218" height="485" alt="image" src="https://github.com/user-attachments/assets/be25e57f-cbfa-49b7-9ce1-25eb1dbbecb2" />
 
