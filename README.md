@@ -402,3 +402,90 @@ All functions need linker symbols for relocation, likely all for resolution
 
 <img width="1218" height="485" alt="image" src="https://github.com/user-attachments/assets/be25e57f-cbfa-49b7-9ce1-25eb1dbbecb2" />
 
+### Signals
+The Kernel uses signal to notify the process of exceptional events.   
+`Signal`: a small message sent to a process via the kernel.   
+Linux has 30 standard signal types each given a unique ID (positive int)  
+`kill -l`: see list of signal names and corresponding numbers  
+`man 7 signal`: talks about what all the different signals do.  
+
+`SIGFPE`:  Signal Floating Point Exception (#8); exception (#0)  \[divide by zero\]
+`SIGSEGV`: Signal Segmentation Violation (#11); exception (#13)  \[illegal memory reference\]
+`SIGINT`: Signal Interrupt (#2); \[keyboard interrupt\]: `ctrl-c`  
+`SIGTSTP`: Signal Terminal Stop (#20); \[keyboard interrupt\]: `ctrl-z`  
+#### Sending Signals (Click Send to Email)
+When kernel exception handler runs in response to an exceptional event or a signal from some process.  
+Signal is directed to destination process.   
+#### Delivering Signals (Email ends up in Mail)
+`pending signal`: a signal that is delivered but not recieved.   
+each process has a `bit vector` for recording its pending signals.   
+`bit vectors` are kernel datastructures where each bit has a distinct meaning.   
+
+#### Recieving Signals (Checking Email)
+When the kernel causes the destination process to react to a pending signal  
+happens when the kernel transfers control back to a process  
+multiple pending signals are resolved in order from low to high serial number.   
+`blocking`: prevents a signal from being recieved  
+`blocking` is typically used temporarily while another signal is being processed  
+each process has a second `bit vector` for blocked signals (1 = blocked)  
+#### Process IDs and Groups
+Each process is identified by an ID: a `PID`  
+Each process belongs to exactly one group identified by a process group id: a `PGID`  
+`ps`: linux command to see all processes; `-u`: user -`al`: long-format  
+`man 2 <fn>`: info about system calls
+`getpid(2)`: 
+`getpgrp(2)`: 
+`#include <unistd.h>`
+#### Sending Signals
+`kill -9 <pid>`: send signal 9 to process connected to pid`
+`SIGKILL`: terminates a process  
+If you kill your shell you log out  
+`#include <signal.h>`
+`int kill(pid_t pid, int sig)`: send a signal. returns 0 on success, -1 if error.   
+`#include <unistd.h>`  
+`unsigned int alarm (unsigned int seconds)`: sets an alarm that will deliver a SIGALARM signal after a specified number of seconds. //Returns number of seconds remaining if previous alarm was still running, otherwise 0.  
+#### Recieving Signals 
+A signal is recieved by destination process by doing a default action or executing programmer specified signal handler.   
+##### Default Actions
+1. Terminate Process
+2. Terminate Process and dump core
+3. Stop the Process
+4. Continue the Process if it was Stopped
+5. Ignore the Signal
+##### programmer-specified signal handler
+1. Code a signal handler
+    1. Looks like a regular function but called by a kernel
+    2. should not make unsafe system calls: \[ie. we are already trying to handle the exception inside the handler, so let's try to not make another exception :) \]
+3. Register my signal handler code: `sigaction(<sig #>)`
+###### Code Example
+
+<img width="866" height="364" alt="image" src="https://github.com/user-attachments/assets/da6a31b8-3dec-41ef-abcf-c7a82e01ecce" />
+
+## Forward Declaration (Multiple Source Files)
+`Forward Declaration` tells the compiler about certain attributes of an identifier before it is fully defined  
+### Declaration vs. Definition
+Declaring tells the compiler about variables (name and type), and functions (return type, name, parameter types)  
+Defining tells the full details, about variables (location in memory), functions (function body)  
+```
+int i=11; //declare, define, initialize
+int j; //declare, define
+extern int k; //declare
+```
+
+## Linker Symbol Table
+The linker symbol table is: 
+
+`gcc -z muldefs`: we know that we have multiple definitions; but ignore these (violates ODF)  
+If a global symbol is not defined, it is a Linker Error.   
+## Resolving Globals
+Act like a linker: if there are two definitions, BAD! We can resolve with usage of `static` (made private) or `extern` (not defined, but only declared).   
+## Symbol Relocation
+Symbol Relocation combines `ROF` (readable object files) into `EOF` so that addresses can be determined for linker symbols  
+### ROFs to EOF: 
+
+<img width="1437" height="877" alt="image" src="https://github.com/user-attachments/assets/eb1c38aa-5b08-4975-a14e-834c9f3a2562" />
+
+### Executable and Linkable Format
+Same as ROF with a few changes: 
+1. Entry Point inside ELF Header (first line of code to execute)
+2. 
